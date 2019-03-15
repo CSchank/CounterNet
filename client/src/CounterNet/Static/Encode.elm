@@ -7,7 +7,7 @@ import Static.Types
 encodeTransition : Transition -> Maybe String
 encodeTransition trans =
     case trans of
-
+        Internal _ -> Nothing
         External ext -> Just <| encodeOutgoingTransition ext
 encodeOutgoingTransition : OutgoingTransition -> String
 encodeOutgoingTransition outgoingtransition = 

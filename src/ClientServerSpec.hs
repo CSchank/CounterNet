@@ -10,11 +10,10 @@ outputDirectory = "."
 --where the generator is
 generatorRoot = "../elm-haskell-state-diagram"
 
+-- clientID = edt (ElmIntRange 0 999999) "clientID" "id assigned when logging in"
 
 clientCounterData = edt (ElmIntRange (-1000000) 1000000) "clientCounterData" "client side counter data"
-serverCounterData = edt (ElmIntRange (-1000000) 1000000) "serverCounterData" "server side counter data"
 
-{-
 counterType :: ElmCustom
 counterType = ec -- helper to make custom types
                 "Counter" -- name of type (Elm syntax rules)
@@ -30,7 +29,6 @@ counterAction = ec
                 [("Increment", [])
                 ,("Decrement", [])
                 ]
--}
 
 counterNet :: Net
 counterNet =
@@ -46,9 +44,12 @@ counterNet =
 
         counterPlace =
             HybridPlace "CounterPlace"
-                    [serverCounterData] --server state
+                    [edt (ElmIntRange (-1000000) 1000000) "serverCounterData" "server side counter data"
+                    ] --server state
                     []                  --player state
-                    [clientCounterData]                          --client state
+                    [
+                     edt (ElmExisting "Model" "CounterNet.CounterSVG") "counterState" ""
+                    ]                          --client state
                     Nothing
                     (Nothing, Nothing)
                     
@@ -85,13 +86,19 @@ counterNet =
                 (constructor "DecrementCounter" [])
                 [("CounterPlace", Just ("CounterPlace", constructor "CounterDecremented" [clientCounterData]))
                 ]
-                Nothing                
+                Nothing
+
+        counterMsg =
+            ClientTransition
+                (msg "CounterMsg" [edt (ElmExisting "Msg" "CounterNet.CounterSVG") "counterMsg" ""])
+                "CounterPlace"
+                (Just "CounterMsg")
     in
         HybridNet
             "CounterNet"
             "MainMenu"
             [mainMenu, counterPlace]
-            [goToCounterPlace,goToMainMenu,incrementCounter,decrementCounter]
+            [goToCounterPlace,goToMainMenu,incrementCounter,decrementCounter,counterMsg]
             []
 
 

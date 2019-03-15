@@ -13,4 +13,4 @@ main = Browser.document { init = \_ -> (model, Cmd.none), view = \m -> { body = 
 
 --Change the model here to preview your state
 model : CounterPlace
-model = CounterPlace (-1000000)
+model = CounterPlace (error "Please fill out default type for typeModel")

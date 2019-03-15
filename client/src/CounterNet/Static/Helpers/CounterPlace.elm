@@ -4,23 +4,24 @@ import Dict exposing (Dict)
 import CounterNet.Static.ExtraTypes exposing(..)
 import CounterNet.Static.Types exposing(..)
 import CounterNet.Static.Types
+import CounterNet.CounterSVG
 
 
-getClientCounterData : CounterPlace -> Int
-getClientCounterData (CounterPlace clientCounterData)  = clientCounterData
+getCounterState : CounterPlace -> CounterNet.CounterSVG.Model
+getCounterState (CounterPlace counterState)  = counterState
 
 
 
-updateClientCounterData : Int -> CounterPlace -> CounterPlace
-updateClientCounterData newclientCounterData (CounterPlace clientCounterData)  = (CounterPlace newclientCounterData) 
+updateCounterState : CounterNet.CounterSVG.Model -> CounterPlace -> CounterPlace
+updateCounterState newcounterState (CounterPlace counterState)  = (CounterPlace newcounterState) 
 
 
-alterClientCounterData : (Int -> Int) -> CounterPlace -> CounterPlace
-alterClientCounterData f (CounterPlace clientCounterData)  = 
+alterCounterState : (CounterNet.CounterSVG.Model -> CounterNet.CounterSVG.Model) -> CounterPlace -> CounterPlace
+alterCounterState f (CounterPlace counterState)  = 
     let
-        newclientCounterData = f clientCounterData
+        newcounterState = f counterState
     in
-        (CounterPlace newclientCounterData) 
+        (CounterPlace newcounterState) 
 
 
 

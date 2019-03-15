@@ -21,4 +21,8 @@ unwrapDecrementCounter DecrementCounter  = TDecrementCounter
 
 
 
+unwrapCounterMsg : CounterMsg -> InternalTransition
+unwrapCounterMsg (CounterMsg counterMsg)  = (TCounterMsg counterMsg) 
+
+
 

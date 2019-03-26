@@ -30,7 +30,7 @@ import Static.Types exposing(NetModel)
 import Config exposing(serverUrl)
 import Utils.Utils exposing(newMsg)
 
--- import Bootstrap.Modal as Modal
+import Bootstrap.Modal as Modal
 
 
 

@@ -10,82 +10,64 @@ outputDirectory = "."
 --where the generator is
 generatorRoot = "../elm-haskell-state-diagram"
 
--- clientID = edt (ElmIntRange 0 999999) "clientID" "id assigned when logging in"
 
-clientCounterData = edt (ElmIntRange (-1000000) 1000000) "clientCounterData" "client side counter data"
-
-counterType :: ElmCustom
-counterType = ec -- helper to make custom types
-                "Counter" -- name of type (Elm syntax rules)
-                [("Counter",
-                            [edt (ElmIntRange (-1000000) 1000000) "counterData" "stores counter data"
-                            ]
-                 )
-                ]
-
-counterAction :: ElmCustom
-counterAction = ec
-                "CounterAction"
-                [("Increment", [])
-                ,("Decrement", [])
-                ]
+clientCounterData = dt (IntRangeT (-1000000) 1000000) "clientCounterData" "client side counter data"
 
 counterNet :: Net
 counterNet =
     let
         mainMenu =
-            HybridPlace "MainMenu" 
+            Place "MainMenu" 
                     [] --server state
                     []                  --player state
                     []                          --client state
                     Nothing
-                    (Nothing, Nothing)
                     
 
         counterPlace =
-            HybridPlace "CounterPlace"
-                    [edt (ElmIntRange (-1000000) 1000000) "serverCounterData" "server side counter data"] --server state
+            Place "CounterPlace"
+                    [dt (IntRangeT (-1000000) 1000000) "serverCounterData" "server side counter data"
+                    ] --server state
                     []                  --player state
                     [clientCounterData]                          --client state
                     Nothing
-                    (Nothing, Nothing)
                     
 
         goToCounterPlace =                 
-            NetTransition
+            Transition
                 OriginClientOnly
-                (msg "GoToCounterPlace" []) -- body
-                [("MainMenu", Just ("CounterPlace", msg "WentToCounterPlace" [clientCounterData]))
+                (constructor "GoToCounterPlace" [])
+                [("MainMenu", Just ("CounterPlace", constructor "WentToCounterPlace" [clientCounterData], Nothing))
                 ,("MainMenu", Nothing) --some people will stay
                 ]
                 Nothing
 
         goToMainMenu =                 
-            NetTransition
+            Transition
                 OriginClientOnly
                 (constructor "GoToMainMenu" [])
-                [("CounterPlace", Just ("MainMenu", constructor "WentToMainMenu" []))
+                [("CounterPlace", Just ("MainMenu", constructor "WentToMainMenu" [], Nothing))
                 ,("CounterPlace", Nothing) --some people will stay
                 ]
                 Nothing
 
         incrementCounter =
-            NetTransition
+            Transition
                 OriginClientOnly
                 (constructor "IncrementCounter" [])
-                [("CounterPlace", Just ("CounterPlace", constructor "CounterIncremented" [clientCounterData]))
+                [("CounterPlace", Just ("CounterPlace", constructor "CounterIncremented" [clientCounterData], Nothing))
                 ]
                 Nothing
 
         decrementCounter =
-            NetTransition
+            Transition
                 OriginClientOnly
                 (constructor "DecrementCounter" [])
-                [("CounterPlace", Just ("CounterPlace", constructor "CounterDecremented" [clientCounterData]))
+                [("CounterPlace", Just ("CounterPlace", constructor "CounterDecremented" [clientCounterData], Nothing))
                 ]
-                Nothing                
+                Nothing
     in
-        HybridNet
+        Net
             "CounterNet"
             "MainMenu"
             [mainMenu, counterPlace]

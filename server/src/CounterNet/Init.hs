@@ -6,6 +6,6 @@ initMainMenu :: MainMenu
 initMainMenu = MainMenu 
 
 initCounterPlace :: CounterPlace
-initCounterPlace = CounterPlace 42
+initCounterPlace = CounterPlace 0
 
 

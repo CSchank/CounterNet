@@ -6,6 +6,7 @@ import CounterNet.Static.ExtraTypes exposing(..)
 
 import Html exposing(..)
 import Html.Events exposing (..)
+import Html.Attributes exposing (style)
 
 import GraphicSVG exposing(filled,red,blue,circle)
 import GraphicSVG.Widget as Widget

@@ -14,7 +14,7 @@ import GraphicSVG.Widget as Widget
 view : CounterPlace -> Html Msg
 view (CounterPlace counter) =
   div [] [
-    div [style "width" "10%"] [Widget.icon "myCircle" 50 50
+    div [style "width" "10%", style "height" "10%"] [Widget.icon "myCircle" 50 50
       [
         circle (abs <| toFloat counter)
           |> filled (if counter < 0 then blue else red)

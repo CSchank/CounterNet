@@ -3,11 +3,10 @@ import CounterNet.Static.Update as CounterNet
 
 import Static.Types exposing(..)
 import Maybe
-import Debug
 
 update : TopLevelData -> NetIncomingMessage -> NetModel -> (NetModel, Cmd NetTransition)
 update tld netInMsg state =
-    case (Debug.log "netInMsg" netInMsg,state) of
+    case (netInMsg,state) of
             (CounterNetInMsg msg, CounterNet m) ->
                 let
                     (newCounterNetState, mcmd) = CounterNet.update tld msg m

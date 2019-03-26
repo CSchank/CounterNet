@@ -6,23 +6,21 @@ import CounterNet.Update exposing(..)
 import Static.Types exposing(..)
 import Dict
 
-update : FromSuperPlace -> IncomingMessage -> NetState -> (NetState,Cmd Transition)
+update : FromSuperPlace -> IncomingMessage -> NetState -> (NetState,Maybe (Cmd Transition))
 update fsp trans state =
     case (trans,state) of
-        ((MWentToCounterPlace clientCounterData) , SMainMenu st) -> (SCounterPlace <| updateMainMenuWentToCounterPlaceCounterPlace fsp (WentToCounterPlace clientCounterData)  st, Cmd.none)
+        ((MWentToCounterPlace clientCounterData) , SMainMenu st) -> (SCounterPlace <| updateMainMenuWentToCounterPlaceCounterPlace fsp (WentToCounterPlace clientCounterData)  st, Nothing)
 
-        (MWentToMainMenu , SCounterPlace st) -> (SMainMenu <| updateCounterPlaceWentToMainMenuMainMenu fsp WentToMainMenu  st, Cmd.none)
+        (MWentToMainMenu , SCounterPlace st) -> (SMainMenu <| updateCounterPlaceWentToMainMenuMainMenu fsp WentToMainMenu  st, Nothing)
 
-        ((MCounterIncremented clientCounterData) , SCounterPlace st) -> (SCounterPlace <| updateCounterPlaceCounterIncrementedCounterPlace fsp (CounterIncremented clientCounterData)  st, Cmd.none)
+        ((MCounterIncremented clientCounterData) , SCounterPlace st) -> (SCounterPlace <| updateCounterPlaceCounterIncrementedCounterPlace fsp (CounterIncremented clientCounterData)  st, Nothing)
 
-        ((MCounterDecremented clientCounterData) , SCounterPlace st) -> (SCounterPlace <| updateCounterPlaceCounterDecrementedCounterPlace fsp (CounterDecremented clientCounterData)  st, Cmd.none)
+        ((MCounterDecremented clientCounterData) , SCounterPlace st) -> (SCounterPlace <| updateCounterPlaceCounterDecrementedCounterPlace fsp (CounterDecremented clientCounterData)  st, Nothing)
 
-        ((MCounterMsg counterMsg) , SCounterPlace st) -> Tuple.mapBoth SCounterPlace (Cmd.map <| Internal  << unwrapCounterMsg) <| updateCounterMsgCounterPlace fsp (CounterMsg counterMsg)  st
 
-        _ -> (state, Cmd.none)
+        _ -> (state, Nothing)
 outgoingToIncoming : Transition -> Maybe IncomingMessage
 outgoingToIncoming trans =
     case trans of
-        Internal (TCounterMsg counterMsg)  -> Just (MCounterMsg counterMsg) 
 
         _ -> Nothing

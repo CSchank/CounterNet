@@ -1,6 +1,5 @@
 module CounterNet.Static.Types exposing(..)
 import CounterNet.Static.ExtraTypes exposing(..)
-import CounterNet.CounterSVG
 
 
 -- the types of all places in the net
@@ -11,7 +10,7 @@ type MainMenu  =
 
 
 type CounterPlace  =
-      CounterPlace CounterNet.CounterSVG.Model {-counterState-}
+      CounterPlace Int {-clientCounterData-}
 
 
 
@@ -20,8 +19,7 @@ type NetState  =
       SMainMenu MainMenu
     | SCounterPlace CounterPlace
 -- internal transition types
-type InternalTransition  =
-      TCounterMsg CounterNet.CounterSVG.Msg
+
 -- outgoing transition types
 type OutgoingTransition  =
       TGoToCounterPlace
@@ -36,8 +34,6 @@ type CounterIncremented  =
       CounterIncremented Int
 type CounterDecremented  =
       CounterDecremented Int
-type CounterMsg  =
-      CounterMsg CounterNet.CounterSVG.Msg
 type GoToCounterPlace  =
       GoToCounterPlace
 type GoToMainMenu  =
@@ -53,8 +49,6 @@ type IncomingMessage  =
     | MWentToMainMenu
     | MCounterIncremented Int {-clientCounterData-}
     | MCounterDecremented Int {-clientCounterData-}
-    | MCounterMsg CounterNet.CounterSVG.Msg {-counterMsg-}
 
 type Transition =
-      Internal InternalTransition |
     External OutgoingTransition

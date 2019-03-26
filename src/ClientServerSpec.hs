@@ -10,42 +10,58 @@ outputDirectory = "."
 --where the generator is
 generatorRoot = "../elm-haskell-state-diagram"
 
+-- clientID = edt (ElmIntRange 0 999999) "clientID" "id assigned when logging in"
 
-clientCounterData = dt (IntRangeT (-1000000) 1000000) "clientCounterData" "client side counter data"
+clientCounterData = edt (ElmIntRange (-1000000) 1000000) "clientCounterData" "client side counter data"
+
+counterType :: ElmCustom
+counterType = ec -- helper to make custom types
+                "Counter" -- name of type (Elm syntax rules)
+                [("Counter",
+                            [edt (ElmIntRange (-1000000) 1000000) "counterData" "stores counter data"
+                            ]
+                 )
+                ]
+
+counterAction :: ElmCustom
+counterAction = ec
+                "CounterAction"
+                [("Increment", [])
+                ,("Decrement", [])
+                ]
 
 counterNet :: Net
 counterNet =
     let
         mainMenu =
-            Place "MainMenu" 
+            HybridPlace "MainMenu" 
                     [] --server state
                     []                  --player state
                     []                          --client state
                     Nothing
+                    (Nothing, Nothing)
                     
 
         counterPlace =
-            Place "CounterPlace"
-                    [dt (IntRangeT (-1000000) 1000000) "serverCounterData" "server side counter data"
-                    ] --server state
+            HybridPlace "CounterPlace"
+                    [edt (ElmIntRange (-1000000) 1000000) "serverCounterData" "server side counter data"] --server state
                     []                  --player state
-                    [
-                     dt (ExistingT "Model" "CounterNet.CounterSVG") "counterState" ""
-                    ]                          --client state
+                    [clientCounterData]                          --client state
                     Nothing
+                    (Nothing, Nothing)
                     
 
         goToCounterPlace =                 
-            Transition
+            NetTransition
                 OriginClientOnly
-                (constructor "GoToCounterPlace" [])
-                [("MainMenu", Just ("CounterPlace", constructor "WentToCounterPlace" [clientCounterData]))
+                (msg "GoToCounterPlace" []) -- body
+                [("MainMenu", Just ("CounterPlace", msg "WentToCounterPlace" [clientCounterData]))
                 ,("MainMenu", Nothing) --some people will stay
                 ]
                 Nothing
 
         goToMainMenu =                 
-            Transition
+            NetTransition
                 OriginClientOnly
                 (constructor "GoToMainMenu" [])
                 [("CounterPlace", Just ("MainMenu", constructor "WentToMainMenu" []))
@@ -54,7 +70,7 @@ counterNet =
                 Nothing
 
         incrementCounter =
-            Transition
+            NetTransition
                 OriginClientOnly
                 (constructor "IncrementCounter" [])
                 [("CounterPlace", Just ("CounterPlace", constructor "CounterIncremented" [clientCounterData]))
@@ -62,24 +78,18 @@ counterNet =
                 Nothing
 
         decrementCounter =
-            Transition
+            NetTransition
                 OriginClientOnly
                 (constructor "DecrementCounter" [])
                 [("CounterPlace", Just ("CounterPlace", constructor "CounterDecremented" [clientCounterData]))
                 ]
-                Nothing
-
-        counterMsg =
-            ClientTransition
-                (msg "CounterMsg" [dt (ExistingT "Msg" "CounterNet.CounterSVG") "counterMsg" ""])
-                "CounterPlace"
-                (Just "CounterMsg")
+                Nothing                
     in
-        Net
+        HybridNet
             "CounterNet"
             "MainMenu"
             [mainMenu, counterPlace]
-            [goToCounterPlace,goToMainMenu,incrementCounter,decrementCounter,counterMsg]
+            [goToCounterPlace,goToMainMenu,incrementCounter,decrementCounter]
             []
 
 

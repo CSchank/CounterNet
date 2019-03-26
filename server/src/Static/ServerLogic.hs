@@ -131,7 +131,7 @@ processCentralMessage centralMessageChan state (ReceivedMessage mClientID incomi
         (nextState, outgoingMsgs, mCmd) = update tld mClientID incomingMsg state
 
     sendMessages outgoingMsgs
-    forkIO $ processCmd centralMessageChan mCmd incomingMsg nextState
+    processCmd centralMessageChan mCmd incomingMsg nextState
 
     return nextState
 

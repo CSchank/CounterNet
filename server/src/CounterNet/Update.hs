@@ -48,7 +48,7 @@ updateGoToCounterPlace fsp clientId GoToCounterPlace mainMenu counterPlace lstMa
 
 
     in
-        (mainMenu, counterPlace, fromMainMenu)
+        (mainMenu, counterPlace, newLstMainMenu)
 
 updateGoToMainMenu :: FromSuperPlace -> 
     ClientID ->
@@ -82,7 +82,7 @@ updateIncrementCounter :: FromSuperPlace ->
     )
 updateIncrementCounter fsp clientId IncrementCounter counterPlace lstCounterPlace =
     let
-        newServerCounterData@(CounterPlace counter) = alterServerCounterData (+1) counterPlace
+        newServerCounterData@(CounterPlace counter) = alterServerCounterData (\n -> n + 1) counterPlace
 
         fromCounterPlace :: (ClientID, CounterPlacePlayer) -> IncrementCounterfromCounterPlace
         fromCounterPlace (pId, pcounterPlace) = 
@@ -102,7 +102,7 @@ updateDecrementCounter :: FromSuperPlace ->
     )
 updateDecrementCounter fsp clientId DecrementCounter counterPlace lstCounterPlace =
     let
-        newServerCounterData@(CounterPlace counter) = alterServerCounterData (flip (-) 1) counterPlace
+        newServerCounterData@(CounterPlace counter) = alterServerCounterData (\n -> n - 1) counterPlace
 
         fromCounterPlace :: (ClientID, CounterPlacePlayer) -> DecrementCounterfromCounterPlace
         fromCounterPlace (pId, pcounterPlace) = 
